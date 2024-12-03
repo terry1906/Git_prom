@@ -5,7 +5,6 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel,
                              QScrollArea, QHBoxLayout, QTableWidget, QTableWidgetItem,
                              QFormLayout, QTextEdit)
 from PyQt6.QtGui import QPixmap
-from PIL import Image
 
 
 # Подключение к базе данных (создание, если не существует)
