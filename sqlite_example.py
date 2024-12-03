@@ -9,7 +9,7 @@ class RestaurantFinder(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Поиск ресторанов в Санкт-Петербурге")
-        self.setGeometry(100, 100, 300, 200)  # Изменили размер окна
+        self.setGeometry(100, 100, 300, 400)  # Изменили размер окна
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -19,7 +19,26 @@ class RestaurantFinder(QMainWindow):
 
         self.region_label = QLabel("Выберите район:")
         self.region_combo = QComboBox()
-        self.region_combo.addItems(["Не выбран", "Центральный", "Московский", "Петроградский", "Невский", "Приморский"])
+        self.region_combo.addItems([
+            "Не выбран",
+            "Адмиралтейский",
+            "Василеостровский",
+            "Выборгский",
+            "Калининский",
+            "Кировский",
+            "Колпинский",
+            "Красногвардейский",
+            "Красносельский",
+            "Кронштадтский",
+            "Курортный",
+            "Московский",
+            "Невский",
+            "Петроградский",
+            "Приморский",
+            "Пушкинский",
+            "Фрунзенский",
+            "Центральный"
+        ])
         self.layout.addWidget(self.region_label)
         self.layout.addWidget(self.region_combo)
 

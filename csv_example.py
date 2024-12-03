@@ -1,69 +1,48 @@
 import sys
-import csv
-from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QLineEdit, QComboBox, QTableWidget, QTableWidgetItem
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget
 
-class RestaurantFinderCSV(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Лицензионное соглашение")
+        self.setGeometry(100, 100, 400, 300)
 
-        self.setWindowTitle("Поиск ресторанов в Санкт-Петербурге")
-        self.setGeometry(100, 100, 300, 200)  # Изменили размер окна
-
+        # Создаем центральный виджет и устанавливаем для него вертикальный макет
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
+        self.layout = QVBoxLayout(self.central_widget)
 
-        self.layout = QVBoxLayout()
-        self.central_widget.setLayout(self.layout)
+        # Кнопка для открытия лицензионного соглашения
+        self.show_button = QPushButton("Показать лицензионное соглашение")
+        self.show_button.clicked.connect(self.show_license_agreement)
 
-        self.region_label = QLabel("Выберите район:")
-        self.region_combo = QComboBox()
-        self.region_combo.addItems(["Не выбран", "Центральный", "Московский", "Петроградский", "Невский", "Приморский"])
-        self.layout.addWidget(self.region_label)
-        self.layout.addWidget(self.region_combo)
+        # Кнопка "Назад", которая ничего не делает
+        self.back_button = QPushButton("Назад")
+        self.back_button.clicked.connect(self.back_action)  # Привязываем действие, которое ничего не делает
 
-        self.address_label = QLabel("Введите адрес:")
-        self.address_input = QLineEdit()
-        self.layout.addWidget(self.address_label)
-        self.layout.addWidget(self.address_input)
+        # Текстовое поле для отображения лицензионного соглашения
+        self.text_edit = QTextEdit()
+        self.text_edit.setReadOnly(True)  # Делаем текстовое поле только для чтения
 
-        self.table = QTableWidget()
-        self.table.setColumnCount(2)
-        self.table.setHorizontalHeaderLabels(["Адрес", "Район"])
-        self.layout.addWidget(self.table)
+        # Добавляем кнопки и текстовое поле в макет
+        self.layout.addWidget(self.show_button)
+        self.layout.addWidget(self.back_button)
+        self.layout.addWidget(self.text_edit)
 
-        self.address_input.textChanged.connect(self.update_table)
-        self.region_combo.currentIndexChanged.connect(self.update_table)
+    def show_license_agreement(self):
+        # Чтение лицензионного соглашения из файла
+        with open('license_agreement.txt', 'r', encoding='utf-8') as file:
+            license_text = file.read()
 
-        # Читаем данные из CSV
-        self.load_data()
+        # Установите текст лицензионного соглашения в текстовое поле
+        self.text_edit.setPlainText(license_text)
 
-    def load_data(self):
-        self.restaurants = []
-        with open('path_to_your_existing_file.csv', newline='', encoding='utf-8') as csvfile:  # Замените на путь к вашему CSV
-            reader = csv.reader(csvfile)
-            next(reader)  # Пропустить заголовок
-            for row in reader:
-                if len(row) == 2:
-                    self.restaurants.append(row)
-        self.update_table()
-
-    def update_table(self):
-        region = self.region_combo.currentText()
-        address = self.address_input.text().lower()
-
-        if region == "Не выбран":
-            filtered_results = [(addr, reg) for addr, reg in self.restaurants if address in addr.lower()]
-        else:
-            filtered_results = [(addr, reg) for addr, reg in self.restaurants if reg == region and address in addr.lower()]
-
-        self.table.setRowCount(len(filtered_results))
-
-        for row_idx, (address, region) in enumerate(filtered_results):
-            self.table.setItem(row_idx, 0, QTableWidgetItem(address))
-            self.table.setItem(row_idx, 1, QTableWidgetItem(region))
+    def back_action(self):
+        # Действие кнопки "Назад", которое ничего не делает
+        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main_window = RestaurantFinderCSV()
+    main_window = MainWindow()
     main_window.show()
     sys.exit(app.exec())

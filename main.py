@@ -1,9 +1,9 @@
 import sys
-import sqlite_example
+import sqlite3
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel,
                              QPushButton, QLineEdit, QMessageBox, QInputDialog,
                              QScrollArea, QHBoxLayout, QTableWidget, QTableWidgetItem,
-                             QFormLayout, QTextEdit)
+                             QFormLayout, QTextEdit, QMainWindow, QComboBox)
 from PyQt6.QtGui import QPixmap
 
 
@@ -139,15 +139,24 @@ class Setting(QWidget):
         btn_open_setting1.clicked.connect(self.open_obnov1)
         layout.addWidget(btn_open_setting1)
 
-        btn_open_open = QPushButton('Кол-во заходов в приложениеыы')
-        btn_open_open.clicked.connect(self.open_open)
-        layout.addWidget(btn_open_open)
+        btn_open_setting1 = QPushButton('Рестораны')
+        btn_open_setting1.clicked.connect(self.open_restaurant)
+        layout.addWidget(btn_open_setting1)
+
+        open_license_window = QPushButton('Открыть лицензионное соглашение')
+        open_license_window.clicked.connect(self.open_license)
+        layout.addWidget(open_license_window)
 
         btn = QPushButton('Назад')
         btn.clicked.connect(self.open_men)
         layout.addWidget(btn)
 
         self.setLayout(layout)
+
+    def open_license(self):
+        self.close()
+        self.license_window = LicenseWindow()
+        self.license_window.show()
 
     def open_men(self):
         self.close()
@@ -162,6 +171,118 @@ class Setting(QWidget):
         self.close()
         self.obnov_window1 = Obnov1()
         self.obnov_window1.show()
+
+    def open_restaurant(self):
+        self.close()
+        self.restaurant_window = Restaurant()
+        self.restaurant_window.show()
+
+
+class LicenseWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Лицензионное соглашение")
+        self.setGeometry(450, 175, 400, 300)
+
+        layout = QVBoxLayout()
+
+        # Чтение лицензионного соглашения из файла
+        with open('license_agreement.txt', 'r', encoding='utf-8') as file:
+            license_text = file.read()
+
+        # Текстовое поле для отображения лицензионного соглашения
+        self.text_edit = QTextEdit()
+        self.text_edit.setPlainText(license_text)
+        self.text_edit.setReadOnly(True)  # Делаем текстовое поле только для чтения
+
+        layout.addWidget(self.text_edit)
+        self.setLayout(layout)
+
+
+class Restaurant(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Поиск ресторанов в Санкт-Петербурге")
+        self.setGeometry(450, 175, 300, 550)
+
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+
+        self.layout = QVBoxLayout()
+        self.central_widget.setLayout(self.layout)
+
+        self.btn = QPushButton('Назад')
+        self.btn.clicked.connect(self.open_setting)
+        self.layout.addWidget(self.btn)
+
+        self.region_label = QLabel("Выберите район:")
+        self.region_combo = QComboBox()
+        self.region_combo.addItems([
+            "Не выбран",
+            "Адмиралтейский",
+            "Василеостровский",
+            "Выборгский",
+            "Калининский",
+            "Кировский",
+            "Колпинский",
+            "Красногвардейский",
+            "Красносельский",
+            "Кронштадтский",
+            "Курортный",
+            "Московский",
+            "Невский",
+            "Петроградский",
+            "Приморский",
+            "Пушкинский",
+            "Фрунзенский",
+            "Центральный"
+        ])
+        self.layout.addWidget(self.region_label)
+        self.layout.addWidget(self.region_combo)
+
+        self.address_label = QLabel("Введите адрес:")
+        self.address_input = QLineEdit()
+        self.layout.addWidget(self.address_label)
+        self.layout.addWidget(self.address_input)
+
+        self.table = QTableWidget()
+        self.table.setColumnCount(2)
+        self.table.setHorizontalHeaderLabels(["Адрес", "Район"])
+        self.layout.addWidget(self.table)
+
+        self.address_input.textChanged.connect(self.update_table)
+        self.region_combo.currentIndexChanged.connect(self.update_table)
+
+        # Подключаемся к существующей базе данных
+        self.conn = sqlite3.connect("path_to_your_existing_database.db")
+        self.update_table()  # Начальный вызов обновления таблицы
+
+    def update_table(self):
+        region = self.region_combo.currentText()
+        address = self.address_input.text()
+
+        cursor = self.conn.cursor()
+
+        # Подготовка запроса
+        if region == "Не выбран":
+            query = "SELECT address, region FROM restaurants WHERE address LIKE ?"
+            cursor.execute(query, (f"%{address}%",))
+        else:
+            query = "SELECT address, region FROM restaurants WHERE region = ? AND address LIKE ?"
+            cursor.execute(query, (region, f"%{address}%"))
+
+        results = cursor.fetchall()
+        self.table.setRowCount(len(results))
+
+        for row_idx, (address, region) in enumerate(results):
+            self.table.setItem(row_idx, 0, QTableWidgetItem(address))
+            self.table.setItem(row_idx, 1, QTableWidgetItem(region))
+
+    def open_setting(self):
+        self.close()
+        self.open_setting = Setting()
+        self.open_setting.show()
 
 
 class Obnov(QWidget):
