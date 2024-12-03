@@ -139,6 +139,10 @@ class Setting(QWidget):
         btn_open_setting1.clicked.connect(self.open_obnov1)
         layout.addWidget(btn_open_setting1)
 
+        btn_open_open = QPushButton('Кол-во заходов в приложениеыы')
+        btn_open_open.clicked.connect(self.open_open)
+        layout.addWidget(btn_open_open)
+
         btn = QPushButton('Назад')
         btn.clicked.connect(self.open_men)
         layout.addWidget(btn)
@@ -492,6 +496,12 @@ class Login(QWidget):
         super().__init__()
         self.setWindowTitle("Вход в аккаунт")
         self.layout = QVBoxLayout()
+
+        self.pixmap = QPixmap('mini.jpg')
+        self.image = QLabel(self)
+        self.image.move(60, 40)
+        self.image.resize(450, 350)
+        self.image.setPixmap(self.pixmap)
 
         self.username_input = QLineEdit()
         self.username_input.setPlaceholderText("Введите имя пользователя")

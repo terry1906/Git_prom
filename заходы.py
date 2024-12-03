@@ -1,29 +1,30 @@
 import sys
-import sqlite3
+from PyQt6.QtGui import QFont, QPixmap
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel
+import os
 
-# Функция для инициализации базы данных
-def init_db():
-    conn = sqlite3.connect('open.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS app_launches (
-            id INTEGER PRIMARY KEY AUTOINCREMENT
-        )
-    ''')
-    conn.commit()
-    conn.close()
 
-# Функция для добавления записи о запуске приложения
-def add_launch_record():
-    conn = sqlite3.connect('open.db')
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO app_launches DEFAULT VALUES')
-    conn.commit()
-    cursor.execute('SELECT COUNT(*) FROM app_launches')
-    count = cursor.fetchone()[0]
-    conn.close()
+# Функция для инициализации файла
+def init_counter_file(filename='launch_count.txt'):
+    if not os.path.exists(filename):
+        with open(filename, 'w') as file:
+            file.write('0')  # Начальное значение счетчика
+
+
+# Функция для чтения количества запусков из файла
+def read_launch_count(filename='launch_count.txt'):
+    with open(filename, 'r') as file:
+        count = int(file.read().strip())
     return count
+
+
+# Функция для увеличения счетчика запусков
+def increment_launch_count(filename='launch_count.txt'):
+    count = read_launch_count(filename)
+    count += 1
+    with open(filename, 'w') as file:
+        file.write(str(count))
+
 
 # Главное окно приложения
 class MainWindow(QMainWindow):
@@ -32,8 +33,16 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Главное окно")
         self.setGeometry(100, 100, 300, 200)
 
+        self.pixmap = QPixmap('mini.jpg')
+        self.image = QLabel(self)
+        self.image.move(60, 40)
+        self.image.resize(450, 350)
+        self.image.setPixmap(self.pixmap)
+
         self.button = QPushButton("Показать счетчик запусков")
         self.button.clicked.connect(self.open_counter_window)
+        self.button.resize(200, 50)
+        self.button.move(100, 150)
 
         layout = QVBoxLayout()
         layout.addWidget(self.button)
@@ -43,26 +52,16 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
         self.counter_window = None  # Хранение окна счетчика
-        self.has_recorded_launch = False  # Флаг для учета запуска
 
-        # Запись первого запуска
-        if not self.has_recorded_launch:
-            add_launch_record()
-            self.has_recorded_launch = True  # Устанавливаем флаг
+        # Увеличиваем счетчик запусков
+        increment_launch_count()
 
     def open_counter_window(self):
-        count = self.get_launch_count()  # Получаем количество запусков
+        count = read_launch_count()  # Получаем количество запусков
         if self.counter_window is None or not self.counter_window.isVisible():
             self.counter_window = CounterWindow(count)
             self.counter_window.show()
 
-    def get_launch_count(self):
-        conn = sqlite3.connect('open.db')
-        cursor = conn.cursor()
-        cursor.execute('SELECT COUNT(*) FROM app_launches')
-        count = cursor.fetchone()[0]
-        conn.close()
-        return count
 
 # Окно со счетчиком запусков
 class CounterWindow(QWidget):
@@ -76,8 +75,9 @@ class CounterWindow(QWidget):
         layout.addWidget(self.label)
         self.setLayout(layout)
 
+
 if __name__ == "__main__":
-    init_db()
+    init_counter_file()  # Инициализация файла перед запуском приложения
     app = QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
