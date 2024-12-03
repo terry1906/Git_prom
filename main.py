@@ -1,5 +1,5 @@
 import sys
-import sqlite3
+import sqlite_example
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel,
                              QPushButton, QLineEdit, QMessageBox, QInputDialog,
                              QScrollArea, QHBoxLayout, QTableWidget, QTableWidgetItem,

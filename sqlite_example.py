@@ -9,7 +9,7 @@ class RestaurantFinder(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Поиск ресторанов в Санкт-Петербурге")
-        self.setGeometry(100, 100, 600, 400)
+        self.setGeometry(100, 100, 300, 200)  # Изменили размер окна
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -17,10 +17,9 @@ class RestaurantFinder(QMainWindow):
         self.layout = QVBoxLayout()
         self.central_widget.setLayout(self.layout)
 
-        # Создаем элементы интерфейса
         self.region_label = QLabel("Выберите район:")
         self.region_combo = QComboBox()
-        self.region_combo.addItems(["Центральный", "Московский", "Петроградский", "Невский", "Приморский"])
+        self.region_combo.addItems(["Не выбран", "Центральный", "Московский", "Петроградский", "Невский", "Приморский"])
         self.layout.addWidget(self.region_label)
         self.layout.addWidget(self.region_combo)
 
@@ -37,44 +36,23 @@ class RestaurantFinder(QMainWindow):
         self.address_input.textChanged.connect(self.update_table)
         self.region_combo.currentIndexChanged.connect(self.update_table)
 
-        # Подключаемся к базе данных
-        self.conn = sqlite3.connect("restaurants.db")
-        self.create_table()
-
-        # Инициализируем таблицу
-        self.update_table()
-
-    def create_table(self):
-        cursor = self.conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS restaurants (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                address TEXT NOT NULL,
-                region TEXT NOT NULL
-            )
-        ''')
-        self.conn.commit()
-        self.insert_sample_data()
-
-    def insert_sample_data(self):
-        cursor = self.conn.cursor()
-        sample_data = [
-            ("Улица Пушкина, 1", "Центральный"),
-            ("Проспект Невский, 10", "Центральный"),
-            ("Улица Ленина, 5", "Московский"),
-            ("Набережная реки Фонтанки, 9", "Петроградский"),
-            ("Цветочная улица, 22", "Приморский"),
-        ]
-        cursor.executemany('INSERT INTO restaurants (address, region) VALUES (?, ?)', sample_data)
-        self.conn.commit()
+        # Подключаемся к существующей базе данных
+        self.conn = sqlite3.connect("path_to_your_existing_database.db")  # Замените на путь к вашей базе данных
+        self.update_table()  # Начальный вызов обновления таблицы
 
     def update_table(self):
         region = self.region_combo.currentText()
         address = self.address_input.text()
 
         cursor = self.conn.cursor()
-        query = "SELECT address, region FROM restaurants WHERE region = ? AND address LIKE ?"
-        cursor.execute(query, (region, f"%{address}%"))
+
+        # Подготовка запроса
+        if region == "Не выбран":
+            query = "SELECT address, region FROM restaurants WHERE address LIKE ?"
+            cursor.execute(query, (f"%{address}%",))
+        else:
+            query = "SELECT address, region FROM restaurants WHERE region = ? AND address LIKE ?"
+            cursor.execute(query, (region, f"%{address}%"))
 
         results = cursor.fetchall()
         self.table.setRowCount(len(results))

@@ -1,15 +1,13 @@
 import sys
 import csv
-from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QLineEdit, QComboBox, QTableWidget, \
-    QTableWidgetItem
-
+from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QLineEdit, QComboBox, QTableWidget, QTableWidgetItem
 
 class RestaurantFinderCSV(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Поиск ресторанов в Санкт-Петербурге")
-        self.setGeometry(100, 100, 600, 400)
+        self.setGeometry(100, 100, 300, 200)  # Изменили размер окна
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -19,7 +17,7 @@ class RestaurantFinderCSV(QMainWindow):
 
         self.region_label = QLabel("Выберите район:")
         self.region_combo = QComboBox()
-        self.region_combo.addItems(["Центральный", "Московский", "Петроградский", "Невский", "Приморский"])
+        self.region_combo.addItems(["Не выбран", "Центральный", "Московский", "Петроградский", "Невский", "Приморский"])
         self.layout.addWidget(self.region_label)
         self.layout.addWidget(self.region_combo)
 
@@ -41,7 +39,7 @@ class RestaurantFinderCSV(QMainWindow):
 
     def load_data(self):
         self.restaurants = []
-        with open('restaurants.csv', newline='', encoding='utf-8') as csvfile:
+        with open('path_to_your_existing_file.csv', newline='', encoding='utf-8') as csvfile:  # Замените на путь к вашему CSV
             reader = csv.reader(csvfile)
             next(reader)  # Пропустить заголовок
             for row in reader:
@@ -53,17 +51,16 @@ class RestaurantFinderCSV(QMainWindow):
         region = self.region_combo.currentText()
         address = self.address_input.text().lower()
 
-        filtered_results = [
-            (addr, reg) for addr, reg in self.restaurants
-            if reg == region and address in addr.lower()
-        ]
+        if region == "Не выбран":
+            filtered_results = [(addr, reg) for addr, reg in self.restaurants if address in addr.lower()]
+        else:
+            filtered_results = [(addr, reg) for addr, reg in self.restaurants if reg == region and address in addr.lower()]
 
         self.table.setRowCount(len(filtered_results))
 
         for row_idx, (address, region) in enumerate(filtered_results):
             self.table.setItem(row_idx, 0, QTableWidgetItem(address))
             self.table.setItem(row_idx, 1, QTableWidgetItem(region))
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
