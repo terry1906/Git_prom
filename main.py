@@ -501,6 +501,8 @@ class CartWindow(QWidget):
         self.cart_table.setColumnCount(3)
         self.cart_table.setHorizontalHeaderLabels(["Наименование", "Цена (руб)", "Удалить"])
 
+
+
         for row, item in enumerate(self.cart):
             self.cart_table.setItem(row, 0, QTableWidgetItem(item.name))
             self.cart_table.setItem(row, 1, QTableWidgetItem(str(item.price)))
@@ -618,10 +620,10 @@ class Login(QWidget):
         self.setWindowTitle("Вход в аккаунт")
         self.layout = QVBoxLayout()
 
-        self.pixmap = QPixmap('mini.jpg')
+        self.pixmap = QPixmap('icons8-знак-чередования-эмоджи-48.jpg')
         self.image = QLabel(self)
-        self.image.move(60, 40)
-        self.image.resize(450, 350)
+        self.image.move(10, 0)
+        self.image.resize(270, 140)
         self.image.setPixmap(self.pixmap)
 
         self.username_input = QLineEdit()
@@ -644,6 +646,7 @@ class Login(QWidget):
         self.setLayout(self.layout)
 
     def login(self):
+
         username = self.username_input.text()
         password = self.password_input.text()
 
@@ -656,6 +659,13 @@ class Login(QWidget):
 
         if result:
             name = result[0]
+            QMessageBox.information(self, "Обновление 1.2", "В патче 1.2 было добавлено:\n "
+                                                            "1.Фоны в окне меню и окне регистрации\n"
+                                                            "2.База данных с магазинами\n"
+                                                            "3.Лицензиооное соглашение\n"
+                                                            "4.Создан файл requirements.txt\n"
+                                                            "5.Это окно\n")
+
             self.close()
             self.main_window = MainWindow()
             self.main_window.show()
@@ -679,6 +689,12 @@ class Registration(QWidget):
         self.username_input = QLineEdit()
         self.username_input.setPlaceholderText("Введите имя пользователя")
         self.layout.addWidget(self.username_input)
+
+        self.pixmap = QPixmap('icons8-знак-чередования-эмоджи-48.jpg')
+        self.image = QLabel(self)
+        self.image.move(10, 0)
+        self.image.resize(270, 140)
+        self.image.setPixmap(self.pixmap)
 
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Введите пароль")
