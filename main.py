@@ -255,7 +255,7 @@ class Restaurant(QMainWindow):
         self.region_combo.currentIndexChanged.connect(self.update_table)
 
         # Подключаемся к существующей базе данных
-        self.conn = sqlite3.connect("path_to_your_existing_database.db")
+        self.conn = sqlite3.connect("restaurant.db")
         self.update_table()  # Начальный вызов обновления таблицы
 
     def update_table(self):
