@@ -1,586 +1,10 @@
-import io
 import sys
 import sqlite3
-from PyQt6 import uic
-from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel,
                              QPushButton, QLineEdit, QMessageBox, QInputDialog,
                              QScrollArea, QHBoxLayout, QTableWidget, QTableWidgetItem,
                              QFormLayout, QTextEdit, QMainWindow, QComboBox)
 from PyQt6.QtGui import QPixmap
-
-template = """<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>795</width>
-    <height>834</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>30</y>
-      <width>801</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_28">
-       <item>
-        <widget class="QPushButton" name="pushButton_33">
-         <property name="text">
-          <string>Профиль</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_34">
-         <property name="text">
-          <string>История заказов</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_32">
-         <property name="text">
-          <string>Создать промокод</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_31">
-         <property name="text">
-          <string>PushButton</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>150</y>
-      <width>241</width>
-      <height>571</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_22">
-       <item>
-        <widget class="QPushButton" name="pushButton_25">
-         <property name="text">
-          <string>Чизбургер</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_21">
-       <item>
-        <widget class="QPushButton" name="pushButton_26">
-         <property name="text">
-          <string>Картошка фри</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_9">
-       <item>
-        <widget class="QPushButton" name="pushButton">
-         <property name="text">
-          <string>Напиток</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
-       <item>
-        <widget class="QPushButton" name="pushButton_2">
-         <property name="text">
-          <string>Наггетсы</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <widget class="QPushButton" name="pushButton_3">
-         <property name="text">
-          <string>Салат Цезарь</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
-       <item>
-        <widget class="QPushButton" name="pushButton_4">
-         <property name="text">
-          <string>Молочный коктель</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <item>
-        <widget class="QPushButton" name="pushButton_5">
-         <property name="text">
-          <string>Фишбургеры</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QPushButton" name="pushButton_6">
-         <property name="text">
-          <string>Пирожок с лавой</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QPushButton" name="pushButton_7">
-         <property name="text">
-          <string>Кофе</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_10">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>150</y>
-      <width>151</width>
-      <height>571</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_10">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_24"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_23"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_17"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_16"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_15"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_14"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_13"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_11"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_12"/>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_18">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>150</y>
-      <width>271</width>
-      <height>571</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_18">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_22">
-       <item>
-        <widget class="QPushButton" name="pushButton_28">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_30">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_21">
-       <item>
-        <widget class="QPushButton" name="pushButton_27">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_29">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
-       <item>
-        <widget class="QPushButton" name="pushButton_9">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_8">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
-       <item>
-        <widget class="QPushButton" name="pushButton_11">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_10">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
-       <item>
-        <widget class="QPushButton" name="pushButton_13">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_12">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QPushButton" name="pushButton_15">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_14">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QPushButton" name="pushButton_19">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_16">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QPushButton" name="pushButton_20">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_17">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QPushButton" name="pushButton_21">
-         <property name="text">
-          <string>ⓘ Подробнее...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_18">
-         <property name="text">
-          <string>В Корзину 🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget_8">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>720</y>
-      <width>791</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_11">
-       <item>
-        <widget class="QPushButton" name="pushButton_22">
-         <property name="text">
-          <string>⛔ Выйти из Аккаунта ⛔</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_10">
-       <item>
-        <widget class="QPushButton" name="pushButton_23">
-         <property name="text">
-          <string>🛒 Корзина🛒</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_9">
-       <item>
-        <widget class="QPushButton" name="pushButton_24">
-         <property name="text">
-          <string>⚙Настройки⚙</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_3">
-    <property name="geometry">
-     <rect>
-      <x>-1</x>
-      <y>1</y>
-      <width>791</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_19">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_29"/>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_4">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>150</y>
-      <width>101</width>
-      <height>571</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_20">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_20">
-       <item>
-        <widget class="QLabel" name="label_9">
-         <property name="text">
-          <string>⩥ 180₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_19">
-       <item>
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>⩥ 100₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_18">
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>⩥ 50₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_17">
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>⩥ 200₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_16">
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>⩥ 250₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_15">
-       <item>
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>⩥ 120₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_14">
-       <item>
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>⩥ 160₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_13">
-       <item>
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>⩥ 70₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_12">
-       <item>
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>⩥ 90₽</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>795</width>
-     <height>26</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
- </widget>
- <resources/>
- <connections/>
-</ui>
-"""
 
 
 # Подключение к базе данных (создание, если не существует)
@@ -607,12 +31,10 @@ class MenuItem:
 
 
 # Главное окно приложения
-class MainWindow(QMainWindow):
+class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Меню Макдональдса")
-        f = io.StringIO(template)
-        uic.loadUi(f, self)
 
         # Элементы меню
         self.menu_items = [
@@ -632,42 +54,55 @@ class MainWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.pushButton_22.clicked.connect(self.open_login)
-        self.pushButton_24.clicked.connect(self.open_setting)
+        layout = QVBoxLayout()
+
+        button_cart = QPushButton("Выход с аккаунта")
+        button_cart.clicked.connect(self.open_login)
+        layout.addWidget(button_cart)
+
+        button_cart = QPushButton("Настройки")
+        button_cart.clicked.connect(self.open_setting)
+        layout.addWidget(button_cart)
+
+        # Создаем прокрутку
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout()
 
         # Меню
-        buttons = [
-            self.pushButton_30,
-            self.pushButton_29,
-            self.pushButton_8,
-            self.pushButton_10,
-            self.pushButton_12,
-            self.pushButton_14,
-            self.pushButton_16,
-            self.pushButton_17,
-            self.pushButton_18
-        ]
-
-        for button, item in zip(buttons, self.menu_items):
+        for item in self.menu_items:
+            h_layout = QHBoxLayout()
+            h_layout.addWidget(QLabel(f"{item.name} - {item.price} ₽"))
+            button = QPushButton("+")
             button.clicked.connect(lambda checked, item=item: self.add_to_cart(item))
+            h_layout.addWidget(button)
+            scroll_layout.addLayout(h_layout)
+
+        scroll_widget.setLayout(scroll_layout)
+        scroll.setWidget(scroll_widget)
+
+        layout.addWidget(scroll)
 
         # Кнопки корзины и истории заказов
-        self.pushButton_23.clicked.connect(self.open_cart)
-        self.pushButton_34.clicked.connect(self.open_order_history)
-        self.pushButton_31.clicked.connect(self.open_open_open_open)
-        self.pushButton_28.clicked.connect(self.open_class_more_detailed_cheeseburger)
+        button_cart = QPushButton("Корзина")
+        button_cart.clicked.connect(self.open_cart)
+        layout.addWidget(button_cart)
 
-    def open_open_open_open(self):
-        QMessageBox.information(self, "Нету", "Пока здесь ничего нет")
+        button_history = QPushButton("История заказов")
+        button_history.clicked.connect(self.open_order_history)
+        layout.addWidget(button_history)
 
-    def add_to_cart(self, item):
-        self.cart.append(item)  # Добавляем товар в корзину
-        QMessageBox.information(self, "Добавлено в корзину", f"{item.name} добавлено в корзину!")
+        self.setLayout(layout)
 
     def open_login(self):
         self.close()
         self.login_window = Login()
         self.login_window.show()
+
+    def add_to_cart(self, item):
+        self.cart.append(item)
+        QMessageBox.information(self, "Добавлено в корзину", f"{item.name} добавлено в корзину!")
 
     def open_cart(self):
         if not self.cart:
@@ -989,15 +424,15 @@ class Versions_0_2_0(QWidget):
         return (
             "В версии 0.2.0. были реализовано:\n"
 
-            "1. Список адресов сети ресторанов Вкусно и точка.\n"
+                    "1. Список адресов сети ресторанов Вкусно и точка.\n"
 
-            "2. Лицензия приложения.\n"
+                    "2. Лицензия приложения.\n"
 
-            "3. Изменился интерфейс окна настройки.\n"
+                    "3. Изменился интерфейс окна настройки.\n"
 
-            "4. Фоны в окне меню и окне регистрации.\n"
+                    "4. Фоны в окне меню и окне регистрации.\n"
 
-            "5. Окно со списком обновлений.\n"
+                    "5. Окно со списком обновлений.\n"
         )
 
     def open_versions(self):

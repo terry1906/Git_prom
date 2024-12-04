@@ -1,48 +1,87 @@
+import io
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget
+import random
+from PyQt6 import uic
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtGui import QPainter, QColor
+from PyQt6.QtCore import QRect
 
-class MainWindow(QMainWindow):
+template = """<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>470</y>
+      <width>161</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Желтый круг</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
+"""
+
+
+class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Лицензионное соглашение")
-        self.setGeometry(100, 100, 400, 300)
+        f = io.StringIO(template)
+        uic.loadUi(f, self)
 
-        # Создаем центральный виджет и устанавливаем для него вертикальный макет
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-        self.layout = QVBoxLayout(self.central_widget)
+        self.pushButton.clicked.connect(self.add_circle)
 
-        # Кнопка для открытия лицензионного соглашения
-        self.show_button = QPushButton("Показать лицензионное соглашение")
-        self.show_button.clicked.connect(self.show_license_agreement)
+        self.circles = []
 
-        # Кнопка "Назад", которая ничего не делает
-        self.back_button = QPushButton("Назад")
-        self.back_button.clicked.connect(self.back_action)  # Привязываем действие, которое ничего не делает
+    def add_circle(self):
+        diameter = random.randint(20, 100)
+        x = random.randint(0, self.width() - diameter)
+        y = random.randint(0, self.height() - diameter)
 
-        # Текстовое поле для отображения лицензионного соглашения
-        self.text_edit = QTextEdit()
-        self.text_edit.setReadOnly(True)  # Делаем текстовое поле только для чтения
+        self.circles.append((x, y, diameter))
+        self.update()
 
-        # Добавляем кнопки и текстовое поле в макет
-        self.layout.addWidget(self.show_button)
-        self.layout.addWidget(self.back_button)
-        self.layout.addWidget(self.text_edit)
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        for (x, y, diameter) in self.circles:
+            painter.setBrush(QColor(255, 255, 0))
+            painter.drawEllipse(QRect(x, y, diameter, diameter))
 
-    def show_license_agreement(self):
-        # Чтение лицензионного соглашения из файла
-        with open('license_agreement.txt', 'r', encoding='utf-8') as file:
-            license_text = file.read()
-
-        # Установите текст лицензионного соглашения в текстовое поле
-        self.text_edit.setPlainText(license_text)
-
-    def back_action(self):
-        # Действие кнопки "Назад", которое ничего не делает
-        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main_window = MainWindow()
-    main_window.show()
+    window = MyWindow()
+    window.show()
     sys.exit(app.exec())
