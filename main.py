@@ -131,13 +131,9 @@ class Setting(QWidget):
     def initUI(self):
         layout = QVBoxLayout()
 
-        btn_open_setting = QPushButton('Обновление 2.0')
-        btn_open_setting.clicked.connect(self.open_obnov)
-        layout.addWidget(btn_open_setting)
-
-        btn_open_setting1 = QPushButton('Версия 1.0')
-        btn_open_setting1.clicked.connect(self.open_obnov1)
-        layout.addWidget(btn_open_setting1)
+        btn_open_versions = QPushButton('Версии')
+        btn_open_versions.clicked.connect(self.open_versions)
+        layout.addWidget(btn_open_versions)
 
         btn_open_setting1 = QPushButton('Рестораны')
         btn_open_setting1.clicked.connect(self.open_restaurant)
@@ -162,6 +158,44 @@ class Setting(QWidget):
         self.close()
         self.menu_window = MainWindow()
 
+    def open_versions(self):
+        self.close()
+        self.oppen_versions = Versions()
+        self.oppen_versions.show()
+
+    def open_restaurant(self):
+        self.close()
+        self.restaurant_window = Restaurant()
+        self.restaurant_window.show()
+
+
+class Versions(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        layout = QVBoxLayout()
+
+        btn_open_setting = QPushButton('Обновление 2.0')
+        btn_open_setting.clicked.connect(self.open_obnov)
+        layout.addWidget(btn_open_setting)
+
+        btn_open_setting1 = QPushButton('Версия 1.0')
+        btn_open_setting1.clicked.connect(self.open_obnov1)
+        layout.addWidget(btn_open_setting1)
+
+        btn = QPushButton('Назад')
+        btn.clicked.connect(self.open_setting)
+        layout.addWidget(btn)
+
+        self.setLayout(layout)
+
+    def open_setting(self):
+        self.close()
+        self.open_setting = Setting()
+        self.open_setting.show()
+
     def open_obnov(self):
         self.close()
         self.obnov_window = Obnov()
@@ -171,11 +205,6 @@ class Setting(QWidget):
         self.close()
         self.obnov_window1 = Obnov1()
         self.obnov_window1.show()
-
-    def open_restaurant(self):
-        self.close()
-        self.restaurant_window = Restaurant()
-        self.restaurant_window.show()
 
 
 class LicenseWindow(QWidget):
@@ -299,7 +328,7 @@ class Obnov(QWidget):
         self.btn = QPushButton('Назад', self)
         self.btn.resize(self.btn.sizeHint())
         self.btn.move(165, 365)
-        self.btn.clicked.connect(self.open_setting)
+        self.btn.clicked.connect(self.open_versions)
 
         # Создаем метку заголовка
         self.label = QLabel(self)
@@ -358,10 +387,10 @@ class Obnov(QWidget):
             # Добавьте более подробно все изменения или дополнения, которые хотите отобразить.
         )
 
-    def open_setting(self):
+    def open_versions(self):
         self.close()
-        self.open_setting = Setting()  # Убедитесь, что класс Setting определен
-        self.open_setting.show()
+        self.oppen_versions = Versions()
+        self.oppen_versions.show()
 
 
 class Obnov1(QWidget):
@@ -378,7 +407,7 @@ class Obnov1(QWidget):
         self.btn = QPushButton('Назад', self)
         self.btn.resize(self.btn.sizeHint())
         self.btn.move(100, 365)
-        self.btn.clicked.connect(self.open_setting)
+        self.btn.clicked.connect(self.open_versions)
 
         # Создаем метку заголовка
         self.label = QLabel(self)
@@ -478,10 +507,10 @@ class Obnov1(QWidget):
             "Возможности для доработки и развития включают расширение функционала, например, добавление новых способов оплаты, улучшение интерфейса с использованием изображений и анимаций, а также интеграцию с другими сервисами для улучшения пользовательского опыта. В дальнейшем можно реализовать поддержку многопользовательских учетных записей, добавление отзывов о блюдах и внедрение системы лояльности для постоянных клиентов.\n"
         )
 
-    def open_setting(self):
+    def open_versions(self):
         self.close()
-        self.open_setting = Setting()  # Убедитесь, что класс Setting определен
-        self.open_setting.show()
+        self.oppen_versions = Versions()
+        self.oppen_versions.show()
 
 
 # Окно для корзины
@@ -500,8 +529,6 @@ class CartWindow(QWidget):
         self.cart_table.setRowCount(len(self.cart))
         self.cart_table.setColumnCount(3)
         self.cart_table.setHorizontalHeaderLabels(["Наименование", "Цена (руб)", "Удалить"])
-
-
 
         for row, item in enumerate(self.cart):
             self.cart_table.setItem(row, 0, QTableWidgetItem(item.name))
