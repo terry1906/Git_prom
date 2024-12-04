@@ -177,34 +177,268 @@ class Versions(QWidget):
     def initUI(self):
         layout = QVBoxLayout()
 
-        btn_open_setting = QPushButton('Обновление 2.0')
-        btn_open_setting.clicked.connect(self.open_obnov)
-        layout.addWidget(btn_open_setting)
-
-        btn_open_setting1 = QPushButton('Версия 1.0')
-        btn_open_setting1.clicked.connect(self.open_obnov1)
+        btn_open_setting1 = QPushButton('Бета 0.1')
+        btn_open_setting1.clicked.connect(self.open_beta_0_1)
         layout.addWidget(btn_open_setting1)
 
-        btn = QPushButton('Назад')
+        btn_open_setting1 = QPushButton('Патч 0.1.1')
+        btn_open_setting1.clicked.connect(self.open_patch_0_1_1)
+        layout.addWidget(btn_open_setting1)
+
+        btn_open_setting1 = QPushButton('Обновление 0.2.0')
+        btn_open_setting1.clicked.connect(self.open_versions_0_2)
+        layout.addWidget(btn_open_setting1)
+
+        btn_open_setting = QPushButton('Что будет добавлено в релизе 1.0')
+        btn_open_setting.clicked.connect(self.open_relis_1_0)
+        layout.addWidget(btn_open_setting)
+
+        btn = QPushButton('Вернуться в окно настроек')
         btn.clicked.connect(self.open_setting)
         layout.addWidget(btn)
 
         self.setLayout(layout)
+
+    def open_beta_0_1(self):
+        self.close()
+        self.obnov_window1 = Beta()
+        self.obnov_window1.show()
+
+    def open_patch_0_1_1(self):
+        self.close()
+        self.obnov_window2 = Patch_0_1_1()
+        self.obnov_window2.show()
+
+    def open_versions_0_2(self):
+        self.close()
+        self.obnov_window3 = Versions_0_2_0()
+        self.obnov_window3.show()
+
+    def open_relis_1_0(self):
+        self.close()
+        self.obnov_window = Obnov()
+        self.obnov_window.show()
 
     def open_setting(self):
         self.close()
         self.open_setting = Setting()
         self.open_setting.show()
 
-    def open_obnov(self):
-        self.close()
-        self.obnov_window = Obnov()
-        self.obnov_window.show()
 
-    def open_obnov1(self):
+class Beta(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        # Устанавливаем параметры окна
+        self.setGeometry(450, 175, 400, 400)
+        self.setWindowTitle('Бетта 0.1.0.')
+
+        # Создаем кнопку "Назад"
+        self.btn = QPushButton('Вернуться в окно версий', self)
+        self.btn.resize(self.btn.sizeHint())
+        self.btn.move(100, 365)
+        self.btn.clicked.connect(self.open_versions)
+
+        # Создаем метку заголовка
+        self.label = QLabel(self)
+        self.label.setText("Перечень реализованных функций, появившихся в версии «Бетта» 0.1.0.")
+        self.label.move(100, 15)
+
+        # Создаем текстовую область для отображения изменений
+        self.text_area = QTextEdit(self)
+        self.text_area.setReadOnly(True)
+        self.text_area.setPlainText(self.get_text_content1())
+        self.text_area.setGeometry(15, 40, 370, 320)  # Положение и размер текстовой области
+
+    def get_text_content1(self):
+        return (
+            "Проект представляет собой приложение для онлайн-заказа еды, которое позволяет пользователю просматривать меню, добавлять товары в корзину, оформлять заказы и сохранять историю заказов. Идея проекта заключается в создании удобного и интуитивно понятного интерфейса для пользователей, которые хотят заказать еду с помощью мобильного устройства или компьютера, при этом имея возможность использовать различные дополнительные функции, такие как промокоды, история заказов и настройки аккаунта.\n\n"
+
+            "Описание реализации:\n\n"
+
+            "Основной функционал приложения включает в себя несколько ключевых компонентов. Для реализации этого функционала использовались различные классы и функции, каждая из которых отвечает за определенный аспект работы программы.\n\n"
+
+            "Классы и их роль:\n\n"
+
+            "Класс Product:\n"
+            "Этот класс представляет собой отдельное блюдо в меню. Он хранит информацию о названии блюда, его цене и описании. Класс имеет конструктор, который принимает данные о блюде, а также метод для получения информации о блюде. Это позволяет организовать меню и управлять данными о каждом товаре.\n"
+            "class Product:\n"
+            "    def __init__(self, name, price, description):\n"
+            "        self.name = name\n"
+            "        self.price = price\n"
+            "        self.description = description\n\n"
+            "    def get_info(self):\n"
+            "        return f'{self.name}: {self.description}, Price: {self.price}'\n\n"
+
+            "Класс Cart:\n"
+            "Этот класс управляет корзиной покупок, куда пользователи могут добавлять продукты. Он хранит список товаров, выбранных пользователем, и предоставляет методы для добавления товаров в корзину, удаления товаров и расчета общей стоимости. Также здесь реализована возможность применения скидок, если промокод является действительным.\n"
+            "class Cart:\n"
+            "    def __init__(self):\n"
+            "        self.items = []\n"
+            "        self.total_price = 0\n\n"
+            "    def add_item(self, product):\n"
+            "        self.items.append(product)\n"
+            "        self.total_price += product.price\n\n"
+            "    def remove_item(self, product):\n"
+            "        self.items.remove(product)\n"
+            "        self.total_price -= product.price\n\n"
+
+            "Класс Order:\n"
+            "Этот класс отвечает за оформление заказа. Он включает информацию о заказанных продуктах, общей стоимости, а также о состоянии заказа (например, 'в процессе', 'доставлен' и т. д.). Класс сохраняет заказ в базе данных после его оформления, чтобы пользователи могли видеть историю своих заказов.\n"
+            "class Order:\n"
+            "    def __init__(self, cart, user):\n"
+            "        self.cart = cart\n"
+            "        self.user = user\n"
+            "        self.status = 'in progress'\n"
+            "        self.total = cart.total_price\n\n"
+            "    def save_order(self):\n"
+            "        # Логика для сохранения заказа в базе данных\n"
+            "        pass\n\n"
+
+            "Класс User:\n"
+            "Класс User представляет собой учетную запись пользователя. Он хранит информацию о пользователе, такую как имя, адрес электронной почты, пароль и историю заказов. Этот класс включает методы для регистрации, авторизации и сохранения информации о пользователе в базе данных.\n"
+            "class User:\n"
+            "    def __init__(self, username, password):\n"
+            "        self.username = username\n"
+            "        self.password = password\n"
+            "        self.orders_history = []\n\n"
+            "    def register(self):\n"
+            "        # Логика регистрации пользователя\n"
+            "        pass\n\n"
+            "    def login(self):\n"
+            "        # Логика авторизации пользователя\n"
+            "        pass\n\n"
+
+            "Класс Database:\n"
+            "Класс, управляющий базой данных, используется для хранения информации о пользователях, заказах и других данных, таких как продукты и промокоды. Он реализует основные операции, такие как добавление и извлечение данных.\n"
+            "class Database:\n"
+            "    def __init__(self):\n"
+            "        self.users = []\n"
+            "        self.orders = []\n\n"
+            "    def add_user(self, user):\n"
+            "        self.users.append(user)\n\n"
+            "    def add_order(self, order):\n"
+            "        self.orders.append(order)\n\n"
+
+            "Взаимодействие классов и функции:\n\n"
+
+            "-Основной поток:\n"
+            "Когда пользователь выбирает продукты и добавляет их в корзину, происходит взаимодействие с классом Cart, который управляет всеми товарами в корзине. После того как пользователь завершает выбор, он может применить промокод (если он есть), используя класс PromoCode. После этого создается заказ с помощью класса Order, который сохраняется в базе данных для последующего использования.\n\n"
+
+            "-История заказов:\n"
+            "Каждый заказ сохраняется в базе данных с помощью класса Database. Пользователь может просматривать свою историю заказов, благодаря методу orders_history в классе User.\n\n"
+
+            "-База данных:\n"
+            "Для хранения данных о пользователях, заказах, блюдах и промокодах используется класс Database. Этот класс реализует операции добавления, извлечения и обновления данных в базе данных.\n\n"
+
+            "Заключение:\n\n"
+            "Проект представляет собой полноценное приложение для онлайн-заказа еды с широким набором функций, включая корзину, историю заказов, промокоды и настройки пользователя. Классы, такие как Product, Cart, Order, User, PromoCode и Database, взаимодействуют друг с другом, создавая удобный и функциональный интерфейс для пользователей.\n\n"
+
+            "Возможности для доработки и развития включают расширение функционала, например, добавление новых способов оплаты, улучшение интерфейса с использованием изображений и анимаций, а также интеграцию с другими сервисами для улучшения пользовательского опыта. В дальнейшем можно реализовать поддержку многопользовательских учетных записей, добавление отзывов о блюдах и внедрение системы лояльности для постоянных клиентов.\n"
+        )
+
+    def open_versions(self):
         self.close()
-        self.obnov_window1 = Obnov1()
-        self.obnov_window1.show()
+        self.oppen_versions = Versions()
+        self.oppen_versions.show()
+
+
+class Patch_0_1_1(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        # Устанавливаем параметры окна
+        self.setGeometry(450, 175, 400, 400)
+        self.setWindowTitle('Патч 0.1.1')
+
+        # Создаем кнопку "Назад"
+        self.btn = QPushButton('Вернуться в окно версий', self)
+        self.btn.resize(self.btn.sizeHint())
+        self.btn.move(100, 365)
+        self.btn.clicked.connect(self.open_versions)
+
+        # Создаем метку заголовка
+        self.label = QLabel(self)
+        self.label.setText("Перечень реализованных функций, появившихся в версии Патча 0.1.1.")
+        self.label.move(5, 15)
+
+        # Создаем текстовую область для отображения изменений
+        self.text_area = QTextEdit(self)
+        self.text_area.setReadOnly(True)
+        self.text_area.setPlainText(self.get_text_content1())
+        self.text_area.setGeometry(15, 40, 370, 320)  # Положение и размер текстовой области
+
+    def get_text_content1(self):
+        return (
+            "В патче 0.1.1 была восстановлена функция «промокодов», которая позволяет оплачивать заказ.\n"
+
+            "Для оплаты заказа необходимо выполнить следующие действия:\n"
+
+            "            1.Добавить в корзину товар,который вы хотите приобрести.\n"
+
+            "            2.Нажать кнопку «Заказать».\n"
+
+            "            3.В открывшемся окне ввести промокод «MACMENU» в поле для ввода карты и нажать кнопку «Подтвердить».\n"
+
+            "После выполнения этих действий ваш заказ будет оплачен.\n"
+        )
+
+    def open_versions(self):
+        self.close()
+        self.oppen_versions = Versions()
+        self.oppen_versions.show()
+
+
+class Versions_0_2_0(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        # Устанавливаем параметры окна
+        self.setGeometry(450, 175, 400, 400)
+        self.setWindowTitle('Версия  0.2.0.')
+
+        # Создаем кнопку "Назад"
+        self.btn = QPushButton('Вернуться в окно версий', self)
+        self.btn.resize(self.btn.sizeHint())
+        self.btn.move(100, 365)
+        self.btn.clicked.connect(self.open_versions)
+
+        # Создаем метку заголовка
+        self.label = QLabel(self)
+        self.label.setText("Перечень реализованных функций, появившихся в версии 0.2.0.")
+        self.label.move(5, 15)
+
+        # Создаем текстовую область для отображения изменений
+        self.text_area = QTextEdit(self)
+        self.text_area.setReadOnly(True)
+        self.text_area.setPlainText(self.get_text_content1())
+        self.text_area.setGeometry(15, 40, 370, 320)  # Положение и размер текстовой области
+
+    def get_text_content1(self):
+        return (
+            "В патче 0.1.1 была восстановлена функция «промокодов», которая позволяет оплачивать заказ.\n"
+
+            "Для оплаты заказа необходимо выполнить следующие действия:\n"
+
+            "            1.Добавить в корзину товар,который вы хотите приобрести.\n"
+
+            "            2.Нажать кнопку «Заказать».\n"
+
+            "            3.В открывшемся окне ввести промокод «MACMENU» в поле для ввода карты и нажать кнопку «Подтвердить».\n"
+
+            "После выполнения этих действий ваш заказ будет оплачен.\n"
+        )
+
+    def open_versions(self):
+        self.close()
+        self.oppen_versions = Versions()
+        self.oppen_versions.show()
 
 
 class LicenseWindow(QWidget):
@@ -393,126 +627,6 @@ class Obnov(QWidget):
         self.oppen_versions.show()
 
 
-class Obnov1(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-
-    def initUI(self):
-        # Устанавливаем параметры окна
-        self.setGeometry(450, 175, 400, 400)
-        self.setWindowTitle('Обновление 1.0')
-
-        # Создаем кнопку "Назад"
-        self.btn = QPushButton('Назад', self)
-        self.btn.resize(self.btn.sizeHint())
-        self.btn.move(100, 365)
-        self.btn.clicked.connect(self.open_versions)
-
-        # Создаем метку заголовка
-        self.label = QLabel(self)
-        self.label.setText("Список того что было реализованно в версии 1.0")
-        self.label.move(100, 15)
-
-        # Создаем текстовую область для отображения изменений
-        self.text_area = QTextEdit(self)
-        self.text_area.setReadOnly(True)
-        self.text_area.setPlainText(self.get_text_content1())
-        self.text_area.setGeometry(15, 40, 370, 320)  # Положение и размер текстовой области
-
-    def get_text_content1(self):
-        return (
-            "Проект представляет собой приложение для онлайн-заказа еды, которое позволяет пользователю просматривать меню, добавлять товары в корзину, оформлять заказы и сохранять историю заказов. Идея проекта заключается в создании удобного и интуитивно понятного интерфейса для пользователей, которые хотят заказать еду с помощью мобильного устройства или компьютера, при этом имея возможность использовать различные дополнительные функции, такие как промокоды, история заказов и настройки аккаунта.\n\n"
-
-            "Описание реализации:\n\n"
-
-            "Основной функционал приложения включает в себя несколько ключевых компонентов. Для реализации этого функционала использовались различные классы и функции, каждая из которых отвечает за определенный аспект работы программы.\n\n"
-
-            "Классы и их роль:\n\n"
-
-            "Класс Product:\n"
-            "Этот класс представляет собой отдельное блюдо в меню. Он хранит информацию о названии блюда, его цене и описании. Класс имеет конструктор, который принимает данные о блюде, а также метод для получения информации о блюде. Это позволяет организовать меню и управлять данными о каждом товаре.\n"
-            "class Product:\n"
-            "    def __init__(self, name, price, description):\n"
-            "        self.name = name\n"
-            "        self.price = price\n"
-            "        self.description = description\n\n"
-            "    def get_info(self):\n"
-            "        return f'{self.name}: {self.description}, Price: {self.price}'\n\n"
-
-            "Класс Cart:\n"
-            "Этот класс управляет корзиной покупок, куда пользователи могут добавлять продукты. Он хранит список товаров, выбранных пользователем, и предоставляет методы для добавления товаров в корзину, удаления товаров и расчета общей стоимости. Также здесь реализована возможность применения скидок, если промокод является действительным.\n"
-            "class Cart:\n"
-            "    def __init__(self):\n"
-            "        self.items = []\n"
-            "        self.total_price = 0\n\n"
-            "    def add_item(self, product):\n"
-            "        self.items.append(product)\n"
-            "        self.total_price += product.price\n\n"
-            "    def remove_item(self, product):\n"
-            "        self.items.remove(product)\n"
-            "        self.total_price -= product.price\n\n"
-
-            "Класс Order:\n"
-            "Этот класс отвечает за оформление заказа. Он включает информацию о заказанных продуктах, общей стоимости, а также о состоянии заказа (например, 'в процессе', 'доставлен' и т. д.). Класс сохраняет заказ в базе данных после его оформления, чтобы пользователи могли видеть историю своих заказов.\n"
-            "class Order:\n"
-            "    def __init__(self, cart, user):\n"
-            "        self.cart = cart\n"
-            "        self.user = user\n"
-            "        self.status = 'in progress'\n"
-            "        self.total = cart.total_price\n\n"
-            "    def save_order(self):\n"
-            "        # Логика для сохранения заказа в базе данных\n"
-            "        pass\n\n"
-
-            "Класс User:\n"
-            "Класс User представляет собой учетную запись пользователя. Он хранит информацию о пользователе, такую как имя, адрес электронной почты, пароль и историю заказов. Этот класс включает методы для регистрации, авторизации и сохранения информации о пользователе в базе данных.\n"
-            "class User:\n"
-            "    def __init__(self, username, password):\n"
-            "        self.username = username\n"
-            "        self.password = password\n"
-            "        self.orders_history = []\n\n"
-            "    def register(self):\n"
-            "        # Логика регистрации пользователя\n"
-            "        pass\n\n"
-            "    def login(self):\n"
-            "        # Логика авторизации пользователя\n"
-            "        pass\n\n"
-
-            "Класс Database:\n"
-            "Класс, управляющий базой данных, используется для хранения информации о пользователях, заказах и других данных, таких как продукты и промокоды. Он реализует основные операции, такие как добавление и извлечение данных.\n"
-            "class Database:\n"
-            "    def __init__(self):\n"
-            "        self.users = []\n"
-            "        self.orders = []\n\n"
-            "    def add_user(self, user):\n"
-            "        self.users.append(user)\n\n"
-            "    def add_order(self, order):\n"
-            "        self.orders.append(order)\n\n"
-
-            "Взаимодействие классов и функции:\n\n"
-
-            "-Основной поток:\n"
-            "Когда пользователь выбирает продукты и добавляет их в корзину, происходит взаимодействие с классом Cart, который управляет всеми товарами в корзине. После того как пользователь завершает выбор, он может применить промокод (если он есть), используя класс PromoCode. После этого создается заказ с помощью класса Order, который сохраняется в базе данных для последующего использования.\n\n"
-
-            "-История заказов:\n"
-            "Каждый заказ сохраняется в базе данных с помощью класса Database. Пользователь может просматривать свою историю заказов, благодаря методу orders_history в классе User.\n\n"
-
-            "-База данных:\n"
-            "Для хранения данных о пользователях, заказах, блюдах и промокодах используется класс Database. Этот класс реализует операции добавления, извлечения и обновления данных в базе данных.\n\n"
-
-            "Заключение:\n\n"
-            "Проект представляет собой полноценное приложение для онлайн-заказа еды с широким набором функций, включая корзину, историю заказов, промокоды и настройки пользователя. Классы, такие как Product, Cart, Order, User, PromoCode и Database, взаимодействуют друг с другом, создавая удобный и функциональный интерфейс для пользователей.\n\n"
-
-            "Возможности для доработки и развития включают расширение функционала, например, добавление новых способов оплаты, улучшение интерфейса с использованием изображений и анимаций, а также интеграцию с другими сервисами для улучшения пользовательского опыта. В дальнейшем можно реализовать поддержку многопользовательских учетных записей, добавление отзывов о блюдах и внедрение системы лояльности для постоянных клиентов.\n"
-        )
-
-    def open_versions(self):
-        self.close()
-        self.oppen_versions = Versions()
-        self.oppen_versions.show()
-
-
 # Окно для корзины
 class CartWindow(QWidget):
     def __init__(self, cart, order_history):
@@ -598,7 +712,7 @@ class OrderDialog(QWidget):
 
     def confirm_order(self):
         # Проверка валидности номера карты и возможности оплаты
-        valid_promo_codes = ["DISCOUNT10", "FREESHIP", "WELCOME50", "NEWYEAR15", "пж100баллов", "NEWYEAR", "MACMENU",
+        valid_promo_codes = ["DISCOUNT10", "FREESHIP", "WELCOME50", "NEWYEAR25", "пж100баллов", "NEWYEAR", "MACMENU",
                              "1"]
         card_number = self.card_number_input.text()
         if len(card_number) == 16 and card_number.isdigit() or card_number in valid_promo_codes:
