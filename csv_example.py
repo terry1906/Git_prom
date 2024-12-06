@@ -55,7 +55,7 @@ template = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 
-class MyWindow(QMainWindow):
+class MyWindow():
     def __init__(self):
         super().__init__()
         f = io.StringIO(template)

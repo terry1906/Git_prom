@@ -655,7 +655,7 @@ class MainWindow(QMainWindow):
         self.pushButton_23.clicked.connect(self.open_cart)
         self.pushButton_34.clicked.connect(self.open_order_history)
         self.pushButton_31.clicked.connect(self.open_open_open_open)
-        self.pushButton_28.clicked.connect(self.open_class_more_detailed_cheeseburger)
+
 
     def open_open_open_open(self):
         QMessageBox.information(self, "Нету", "Пока здесь ничего нет")

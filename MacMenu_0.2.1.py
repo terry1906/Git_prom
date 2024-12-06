@@ -5,6 +5,8 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel,
                              QScrollArea, QHBoxLayout, QTableWidget, QTableWidgetItem,
                              QFormLayout, QTextEdit, QMainWindow, QComboBox)
 from PyQt6.QtGui import QPixmap
+import csv
+import os
 
 
 # Подключение к базе данных (создание, если не существует)
@@ -653,7 +655,6 @@ class CartWindow(QWidget):
 
         layout.addWidget(self.cart_table)
 
-        # Кнопки заказа и возврата в меню
         order_button = QPushButton("Заказать")
         order_button.clicked.connect(self.open_order_dialog)
         layout.addWidget(order_button)
@@ -711,17 +712,22 @@ class OrderDialog(QWidget):
         self.setLayout(layout)
 
     def confirm_order(self):
-        # Проверка валидности номера карты и возможности оплаты
-        valid_promo_codes = ["DISCOUNT10", "FREESHIP", "WELCOME50", "NEWYEAR25", "пж100баллов", "NEWYEAR", "MACMENU",
-                             "1"]
+        valid_promo_codes = ["DISCOUNT10", "FREESHIP", "WELCOME50", "NEWYEAR25", "пж100баллов", "NEWYEAR", "MACMENU", "1"]
         card_number = self.card_number_input.text()
-        if len(card_number) == 16 and card_number.isdigit() or card_number in valid_promo_codes:
+        if (len(card_number) == 16 and card_number.isdigit()) or card_number in valid_promo_codes:
             self.order_history.append(self.cart.copy())  # Добавляем заказ в историю
+            self.save_order_to_csv()  # Сохраняем заказ в CSV
             self.cart.clear()  # Обнуляем корзину
             QMessageBox.information(self, "Заказ подтвержден", "Ваш заказ успешно оплачен!")
             self.close()
         else:
-            QMessageBox.warning(self, "Ошибка", "Неправильный номер карты или промокод. Введите коректные данные.")
+            QMessageBox.warning(self, "Ошибка", "Неправильный номер карты или промокод. Введите корректные данные.")
+
+    def save_order_to_csv(self):
+        with open('order_history.csv', mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            order_names = ', '.join([item.name for item in self.cart])
+            writer.writerow([order_names, "Оплачен"])
 
 
 # Окно истории заказов
@@ -736,14 +742,9 @@ class OrderHistoryWindow(QWidget):
         layout = QVBoxLayout()
 
         self.history_table = QTableWidget()
-        self.history_table.setRowCount(len(self.order_history))
+        self.load_orders_from_csv()  # Загружаем заказы из CSV
         self.history_table.setColumnCount(2)
         self.history_table.setHorizontalHeaderLabels(["Заказ", "Статус"])
-
-        for row, order in enumerate(self.order_history):
-            order_names = ', '.join([item.name for item in order])
-            self.history_table.setItem(row, 0, QTableWidgetItem(order_names))
-            self.history_table.setItem(row, 1, QTableWidgetItem("Оплачен"))
 
         layout.addWidget(self.history_table)
 
@@ -753,6 +754,19 @@ class OrderHistoryWindow(QWidget):
 
         self.setLayout(layout)
 
+    def load_orders_from_csv(self):
+        if os.path.exists('order_history.csv'):
+            with open('order_history.csv', mode='r', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    if row:  # Проверяем, что строка не пустая
+                        self.add_order_to_table(row[0], row[1])
+
+    def add_order_to_table(self, order, status):
+        row_position = self.history_table.rowCount()
+        self.history_table.insertRow(row_position)
+        self.history_table.setItem(row_position, 0, QTableWidgetItem(order))
+        self.history_table.setItem(row_position, 1, QTableWidgetItem(status))
 
 # Главное окно с функциями регистрации и входа
 class Login(QWidget):
